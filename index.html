@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Общий Склад Фит</title>
+  <style>
+    :root {
+      --bg: #000;
+      --sidebar: #000;
+      --msg-bg: #111;
+      --msg-sent: #222;
+      --border: #fff;
+      --text: #fff;
+      --accent: #fff;
+      --input-bg: #000;
+      --input-border: #fff;
+      --button-bg: #fff;
+      --button-text: #000;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      height: 100vh;
+      background-color: #000;
+    }
+
+    .login-title {
+      font-size: 3rem;
+      margin-bottom: 2rem;
+      text-align: center;
+      color: #00ff00; /* Зелёный цвет */
+      text-shadow:
+        -2px -2px 0 #ffd700,  /* Золото */
+         0   -2px 0 #ffd700,
+         2px -2px 0 #ffd700,
+         2px  0   0 #ffd700,
+         2px  2px 0 #ffd700,
+         0    2px 0 #ffd700,
+        -2px  2px 0 #ffd700,
+        -2px  0   0 #ffd700;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      width: 80%;
+      max-width: 400px;
+    }
+
+    .login-input {
+      padding: 12px;
+      margin-bottom: 15px;
+      background-color: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--input-border);
+      font-size: 1rem;
+    }
+
+    .login-button {
+      padding: 12px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+    }
+
+    .chat-container {
+      display: none;
+      flex: 1;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      padding: 15px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #000;
+    }
+
+    .app-title {
+      font-size: 1.8rem;
+      color: #00ff00; /* Зелёный цвет */
+      text-shadow:
+        -1px -1px 0 #ffd700,  /* Золото */
+         0   -1px 0 #ffd700,
+         1px -1px 0 #ffd700,
+         1px  0   0 #ffd700,
+         1px  1px 0 #ffd700,
+         0    1px 0 #ffd700,
+        -1px  1px 0 #ffd700,
+        -1px  0   0 #ffd700;
+    }
+
+    .logout-btn {
+      background-color: #ff0000;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+    }
+
+    .messages-container {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      background-color: var(--msg-bg);
+    }
+
+    .message {
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      background-color: var(--msg-bg);
+      word-wrap: break-word;
+    }
+
+    .message.sent {
+      background-color: var(--msg-sent);
+      margin-left: 20%;
+      text-align: right;
+    }
+
+    .message.received {
+      margin-right: 20%;
+    }
+
+    .message-header {
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-bottom: 5px;
+    }
+
+    .message-content {
+      font-size: 1rem;
+    }
+
+    .input-container {
+      display: flex;
+      padding: 15px;
+      background-color: var(--bg);
+      border-top: 1px solid var(--border);
+    }
+
+    .message-input {
+      flex: 1;
+      padding: 12px;
+      background-color: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--input-border);
+      font-size: 1rem;
+    }
+
+    .send-button {
+      padding: 12px 20px;
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+
+    .channel-name {
+      font-size: 1.2rem;
+      color: #ffd700; /* Золотой цвет для названия канала */
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-screen" id="loginScreen">
+    <h1 class="login-title">Фит</h1>
+    <form class="login-form" id="loginForm">
+      <input type="text" class="login-input" id="usernameInput" placeholder="Введите имя и фамилию" required>
+      <button type="submit" class="login-button">Войти</button>
+    </form>
+  </div>
+
+  <div class="chat-container" id="chatContainer">
+    <div class="header">
+      <h2 class="app-title">Фит</h2>
+      <div>
+        <span class="channel-name">Общий Склад Фит</span>
+        <button class="logout-btn" id="logoutBtn">Выйти</button>
+      </div>
+    </div>
+    <div class="messages-container" id="messagesContainer"></div>
+    <div class="input-container">
+      <input type="text" class="message-input" id="messageInput" placeholder="Введите сообщение..." maxlength="500">
+      <button class="send-button" id="sendButton">Отправить</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Константы ---
+    const MESSAGES_KEY = 'chat_messages';
+    const USERNAME_KEY = 'username';
+
+    // --- Элементы DOM ---
+    const loginScreen = document.getElementById('loginScreen');
+    const chatContainer = document.getElementById('chatContainer');
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('usernameInput');
+    const messagesContainer = document.getElementById('messagesContainer');
+    const messageInput = document.getElementById('messageInput');
+    const sendButton = document.getElementById('sendButton');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    let currentUser = null;
+
+    // --- Инициализация приложения ---
+    function initApp() {
+      // Проверка сохранённого пользователя
+      const savedUsername = localStorage.getItem(USERNAME_KEY);
+      if (savedUsername) {
+        currentUser = savedUsername;
+        showChat();
+        loadMessagesFromStorage();
+      } else {
+        showLogin();
+      }
+    }
+
+    // --- Функции UI ---
+    function showLogin() {
+      loginScreen.style.display = 'flex';
+      chatContainer.style.display = 'none';
+    }
+
+    function showChat() {
+      loginScreen.style.display = 'none';
+      chatContainer.style.display = 'flex';
+      document.title = `Общий Склад Фит - ${currentUser}`;
+    }
+
+    // --- Обработчики событий ---
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = usernameInput.value.trim();
+      if (name) {
+        currentUser = name;
+        localStorage.setItem(USERNAME_KEY, currentUser);
+        showChat();
+        loadMessagesFromStorage(); // Загрузить сообщения после входа
+      }
+    });
+
+    sendButton.addEventListener('click', sendMessage);
+    messageInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+
+    logoutBtn.addEventListener('click', () => {
+      currentUser = null;
+      localStorage.removeItem(USERNAME_KEY);
+      showLogin();
+    });
+
+    // --- Функции работы с сообщениями ---
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (text && currentUser) {
+        const newMessage = {
+          username: currentUser,
+          text: text,
+          timestamp: Date.now() // Используем локальное время
+        };
+        saveMessageToStorage(newMessage);
+        displayMessage(newMessage);
+        messageInput.value = '';
+      }
+    }
+
+    function saveMessageToStorage(message) {
+      const messages = JSON.parse(localStorage.getItem(MESSAGES_KEY) || '[]');
+      messages.push(message);
+      // Ограничиваем количество сообщений, чтобы localStorage не переполнялся
+      if (messages.length > 100) {
+          messages.shift(); // Удаляем самое старое сообщение
+      }
+      localStorage.setItem(MESSAGES_KEY, JSON.stringify(messages));
+    }
+
+    function loadMessagesFromStorage() {
+      messagesContainer.innerHTML = ''; // Очистить перед загрузкой
+      const messages = JSON.parse(localStorage.getItem(MESSAGES_KEY) || '[]');
+      messages.forEach(message => {
+        displayMessage(message);
+      });
+    }
+
+    function displayMessage(message) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message');
+
+      // Проверяем, является ли сообщение отправленным пользователем
+      if (message.username === currentUser) {
+        messageElement.classList.add('sent');
+      } else {
+        messageElement.classList.add('received');
+      }
+
+      const date = new Date(message.timestamp);
+      const timeString = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      messageElement.innerHTML = `
+        <div class="message-header">${message.username} <span style="color:#666;">${timeString}</span></div>
+        <div class="message-content">${message.text}</div>
+      `;
+      messagesContainer.appendChild(messageElement);
+      messagesContainer.scrollTop = messagesContainer.scrollHeight; // Автопрокрутка
+    }
+
+    // --- Запуск приложения ---
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+
+</body>
+</html>
